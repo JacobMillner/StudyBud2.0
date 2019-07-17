@@ -1,26 +1,42 @@
+from flask import Flask, jsonify, request
 from .entities.entity import Session, engine, Base
 from .entities.subject import Subject
+
+# creating the Flask application
+app = Flask(__name__)
 
 # generate database schema
 Base.metadata.create_all(engine)
 
-# start session
-session = Session()
+@app.route('/subjects')
+def get_subjects():
+    # fetching from the database
+    session = Session()
+    subject_objects = session.query(Subject).all()
 
-# check for existing data
-subjects = session.query(Subject).all()
+    # transforming into JSON-serializable objects
+    schema = SubjectSchema(many=True)
+    subjects = schema.dump(subject_objects)
 
-if len(subjects) == 0:
-    # create and persist dummy exam
-    python_subject = Subject("Japanese", "The national language of glorious Nippon.", "script")
-    session.add(python_subject)
-    session.commit()
+    # serializing as JSON
     session.close()
+    return jsonify(subjects.data)
 
-    # reload subjects
-    subjects = session.query(Subject).all()
 
-# show existing subjects
-print('### Subjects:')
-for subject in subjects:
-    print(f'({subject.id}) {subject.title} - {subject.description}')
+@app.route('/subjects', methods=['POST'])
+def add_subject():
+    # mount subject object
+    posted_subject = SubjectSchema(only=('title', 'description'))\
+        .load(request.get_json())
+
+    subject = Subject(**posted_subject.data, created_by="HTTP post request")
+
+    # persist subject
+    session = Session()
+    session.add(subject)
+    session.commit()
+
+    # return created subject
+    new_subject = SubjectSchema().dump(subject).data
+    session.close()
+    return jsonify(new_subject), 201
