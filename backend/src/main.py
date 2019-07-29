@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from .entities.entity import Session, engine, Base
-from .entities.subject import Subject
+from .entities.subject import Subject, SubjectSchema
 
 # creating the Flask application
 app = Flask(__name__)
