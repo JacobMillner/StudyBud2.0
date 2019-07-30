@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from .auth import AuthError, requires_auth
 from .entities.entity import Session, engine, Base
 from .entities.subject import Subject, SubjectSchema
 
@@ -26,6 +27,7 @@ def get_subjects():
 
 
 @app.route('/subjects', methods=['POST'])
+@requires_auth
 def add_subject():
     # mount subject object
     posted_subject = SubjectSchema(only=('title', 'description'))\
@@ -42,3 +44,9 @@ def add_subject():
     new_subject = SubjectSchema().dump(subject).data
     session.close()
     return jsonify(new_subject), 201
+
+@app.errorhandler(AuthError)
+def handle_auth_error(ex):
+    response = jsonify(ex.error)
+    response.status_code = ex.status_code
+    return response
