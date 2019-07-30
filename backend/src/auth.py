@@ -7,7 +7,7 @@ from urllib.request import urlopen
 
 AUTH0_DOMAIN = 'studybud.auth0.com'
 ALGORITHMS = ['RS256']
-API_AUDIENCE = 'https://study-bud.com'
+API_AUDIENCE = 'https://study-bud.com/'
 
 
 class AuthError(Exception):

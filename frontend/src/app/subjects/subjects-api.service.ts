@@ -1,5 +1,6 @@
+import * as Auth0 from 'auth0-web';
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import {API_URL} from '../env';
@@ -20,5 +21,15 @@ export class SubjectsApiService {
     return this.http
       .get<Subject[]>(`${API_URL}/subjects`).pipe(
       catchError(SubjectsApiService._handleError));
+  }
+
+  saveSubject(subject: Subject): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${Auth0.getAccessToken()}`
+      })
+    };
+    return this.http
+      .post(`${API_URL}/subjects`, subject, httpOptions);
   }
 }

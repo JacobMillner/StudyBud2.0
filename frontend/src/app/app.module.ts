@@ -1,21 +1,47 @@
+import * as Auth0 from 'auth0-web';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
 
-import { AppRoutingModule } from './app-routing.module';
+//import { AppRoutingModule } from './app-routing.module';
+import {RouterModule, Routes} from '@angular/router';
 import { AppComponent } from './app.component';
 import {SubjectsApiService} from './subjects/subjects-api.service';
+import {SubjectFormComponent} from './subjects/subject-form.component';
+import {SubjectsComponent} from './subjects/subjects.component';
+import {CallbackComponent} from './callback.component';
+
+const appRoutes: Routes = [
+  { path: 'callback', component: CallbackComponent },
+  { path: 'new-subject', component: SubjectFormComponent },
+  { path: '', component: SubjectsComponent },
+];
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SubjectFormComponent,
+    SubjectsComponent,
+    CallbackComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    RouterModule.forRoot(
+      appRoutes,
+    ),
     HttpClientModule
   ],
   providers: [SubjectsApiService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+      Auth0.configure({
+        domain: 'studybud.auth0.com',
+        audience: 'https://study-bud.com/',
+        clientID: 'n8X9LuACQRanrZ9Jo1Gh57zU2FnhBA0m',
+        redirectUri: 'http://localhost:4200/callback',
+        scope: 'openid profile manage:subjects'
+      });
+  }
+}
