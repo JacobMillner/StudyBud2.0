@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from .auth import AuthError, requires_auth
+from .auth import AuthError, requires_auth, requires_role
 from .entities.entity import Session, engine, Base
 from .entities.subject import Subject, SubjectSchema
 
@@ -44,6 +44,16 @@ def add_subject():
     new_subject = SubjectSchema().dump(subject).data
     session.close()
     return jsonify(new_subject), 201
+
+@app.route('/subjects/<subjectId>', methods=['DELETE'])
+@requires_role('admin')
+def delete_subject(subjectId):
+    session = Session()
+    subject = session.query(Subject).filter_by(id=subjectId).first()
+    session.delete(subject)
+    session.commit()
+    session.close()
+    return '', 201
 
 @app.errorhandler(AuthError)
 def handle_auth_error(ex):
