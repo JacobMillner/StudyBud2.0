@@ -13,8 +13,8 @@ class Subject(Entity, Base):
     def __init__(self, title, description, long_description, created_by):
         Entity.__init__(self, created_by)
         self.title = title
-        self.long_description = long_description
         self.description = description
+        self.long_description = long_description
 
 class SubjectSchema(Schema):
     id = fields.Number()

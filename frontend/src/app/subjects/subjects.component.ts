@@ -15,7 +15,7 @@ import {SubjectsApiService} from './subjects-api.service';
           <mat-card-title>{{subject.title}}</mat-card-title>
           <mat-card-subtitle>{{subject.description}}</mat-card-subtitle>
           <p>
-            {{exam.long_description}}
+            {{subject.long_description}}
           </p>
           <button mat-raised-button color="accent">Start</button>
           <button mat-button color="warn" *ngIf="isAdmin()"

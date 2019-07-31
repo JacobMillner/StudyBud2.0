@@ -21,6 +21,8 @@ def get_subjects():
     schema = SubjectSchema(many=True)
     subjects = schema.dump(subject_objects)
 
+    print(subjects.data)
+
     # serializing as JSON
     session.close()
     return jsonify(subjects.data)
@@ -34,6 +36,8 @@ def add_subject():
         .load(request.get_json())
 
     subject = Subject(**posted_subject.data, created_by="HTTP post request")
+
+    print(subject.long_description)
 
     # persist subject
     session = Session()
