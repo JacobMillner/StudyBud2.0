@@ -7,18 +7,33 @@ import {SubjectsApiService} from './subjects-api.service';
 @Component({
   selector: 'subjects',
   template: `
-    <div>
-      <button routerLink="/new-subject">New Subject</button>
-      <button (click)="signIn()" *ngIf="!authenticated">Sign In</button>
-      <button (click)="signOut()" *ngIf="authenticated">Sign Out</button>
-      <p *ngIf="authenticated">Hello, {{getProfile().name}}</p>
-      <ul>
-        <li *ngFor="let subject of subjectsList">
-          {{subject.title}}
-        </li>
-      </ul>
+    <h2>Study Subjects</h2>
+    <p>Choose a Subject to track study time.</p>
+    <div class="subjects">
+      <mat-card class="example-card" *ngFor="let subject of subjectsList" class="mat-elevation-z5">
+        <mat-card-content>
+          <mat-card-title>{{subject.title}}</mat-card-title>
+          <mat-card-subtitle>{{subject.description}}</mat-card-subtitle>
+          <p>
+            Etiam enim purus, vehicula nec dapibus quis, egestas eu quam.
+            Nullam eleifend auctor leo, vitae rhoncus mi sodales vel.
+            Aenean fermentum laoreet volutpat. Integer quam orci,
+            molestie non nibh suscipit, faucibus euismod sapien.
+          </p>
+          <button mat-raised-button color="accent">Start</button>
+          <button mat-button color="warn" *ngIf="isAdmin()"
+                  (click)="delete(subject.id)">
+            Delete
+          </button>
+        </mat-card-content>
+      </mat-card>
     </div>
-  `
+    <button mat-fab color="primary" *ngIf="authenticated"
+            class="new-subject" routerLink="/new-subject">
+      <i class="material-icons">note_add</i>
+    </button>
+  `,
+  styleUrls: ['subjects.component.css'],
 })
 export class SubjectsComponent implements OnInit, OnDestroy {
   subjectsListSubs: Subscription;
@@ -27,10 +42,6 @@ export class SubjectsComponent implements OnInit, OnDestroy {
 
   constructor(private subjectsApi: SubjectsApiService) {
   }
-
-  signIn = Auth0.signIn;
-  signOut = Auth0.signOut;
-  getProfile = Auth0.getProfile;
 
   ngOnInit() {
     this.subjectsListSubs = this.subjectsApi
@@ -47,5 +58,26 @@ export class SubjectsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subjectsListSubs.unsubscribe();
+  }
+
+  delete(subjectId: number) {
+    this.subjectsApi
+      .deleteSubject(subjectId)
+      .subscribe(() => {
+        this.subjectsListSubs = this.subjectsApi
+          .getSubjects()
+          .subscribe(res => {
+              this.subjectsList = res;
+            },
+            console.error
+          )
+      }, console.error);
+  }
+
+  isAdmin() {
+    if (!Auth0.isAuthenticated()) return false;
+
+    const roles = Auth0.getProfile()['https://study-bud.com/roles'];
+    return roles.includes('admin');
   }
 }

@@ -32,4 +32,14 @@ export class SubjectsApiService {
     return this.http
       .post(`${API_URL}/subjects`, subject, httpOptions);
   }
+
+  deleteSubject(subjectId: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${Auth0.getAccessToken()}`
+      })
+    };
+    return this.http
+      .delete(`${API_URL}/subjects/${subjectId}`, httpOptions);
+  }
 }

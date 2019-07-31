@@ -3,13 +3,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
 
-//import { AppRoutingModule } from './app-routing.module';
 import {RouterModule, Routes} from '@angular/router';
 import { AppComponent } from './app.component';
 import {SubjectsApiService} from './subjects/subjects-api.service';
 import {SubjectFormComponent} from './subjects/subject-form.component';
 import {SubjectsComponent} from './subjects/subjects.component';
 import {CallbackComponent} from './callback.component';
+
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {MatToolbarModule, MatButtonModule, MatCardModule} from '@angular/material';
 
 const appRoutes: Routes = [
   { path: 'callback', component: CallbackComponent },
@@ -29,7 +31,11 @@ const appRoutes: Routes = [
     RouterModule.forRoot(
       appRoutes,
     ),
-    HttpClientModule
+    HttpClientModule,
+    NoopAnimationsModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatCardModule
   ],
   providers: [SubjectsApiService],
   bootstrap: [AppComponent]

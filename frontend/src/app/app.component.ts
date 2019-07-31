@@ -1,14 +1,33 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import * as Auth0 from 'auth0-web';
 
 @Component({
   selector: 'app-root',
   template: `
-    <div style="text-align:center">
-      <h1>subjects</h1>
+    <mat-toolbar color="primary" class="mat-elevation-z10">
+      <button mat-button>Study Subjects</button>
+      <button mat-button>About</button>
+
+      <!-- This fills the remaining space of the current row -->
+      <span class="fill-remaining-space"></span>
+
+      <button mat-button (click)="signIn()" *ngIf="!authenticated">Sign In</button>
+      <button mat-button (click)="signOut()" *ngIf="authenticated">Sign Out</button>
+    </mat-toolbar>
+    <div class="view-container">
+      <router-outlet></router-outlet>
     </div>
-    <h2>Here are the Subjects created so far: </h2>
-    <router-outlet></router-outlet>
   `,
   styleUrls: ['./app.component.css']
 })
-export class AppComponent { }
+export class AppComponent implements OnInit {
+  authenticated = false;
+
+  signIn = Auth0.signIn;
+  signOut = Auth0.signOut;
+
+  ngOnInit() {
+    const self = this;
+    Auth0.subscribe((authenticated) => (self.authenticated = authenticated));
+  }
+}
