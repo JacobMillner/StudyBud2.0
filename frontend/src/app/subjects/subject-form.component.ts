@@ -1,25 +1,55 @@
 import {Component} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {SubjectsApiService} from "./subjects-api.service";
 import {Router} from "@angular/router";
 
 @Component({
   selector: 'subject-form',
   template: `
-    <div>
+    <mat-card>
       <h2>New Subject</h2>
-      <label for="subject-title">Title</label>
-      <input id="subject-title" (keyup)="updateTitle($event)">
-      <label for="subject-description">Description</label>
-      <input id="subject-description" (keyup)="updateDescription($event)">
-      <button (click)="saveSubject()">Save Subject</button>
-    </div>
-  `
+        <mat-form-field class="full-width">
+          <input matInput
+                 placeholder="Title"
+                 (keyup)="updateTitle($event)">
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <input matInput
+                 placeholder="Description"
+                 (keyup)="updateDescription($event)">
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <textarea rows="5"
+                    matInput
+                    placeholder="Long Description"
+                    (keyup)="updateLongDescription($event)"></textarea>
+        </mat-form-field>
+
+        <button mat-raised-button
+                color="primary"
+                (click)="saveSubject()">
+          Save Subject
+        </button>
+    </mat-card>
+  `,
+  styles: [`
+    .subjects-form {
+      min-width: 150px;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .full-width {
+      width: 100%;
+    }
+  `]
 })
 export class SubjectFormComponent {
   subject = {
     title: '',
     description: '',
+    long_description: '',
   };
 
   constructor(private subjectsApi: SubjectsApiService, private router: Router) { }
@@ -30,6 +60,10 @@ export class SubjectFormComponent {
 
   updateDescription(event: any) {
     this.subject.description = event.target.value;
+  }
+
+  updateLongDescription(event: any) {
+    this.subject.long_description = event.target.value;
   }
 
   saveSubject() {

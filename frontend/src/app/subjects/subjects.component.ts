@@ -10,15 +10,12 @@ import {SubjectsApiService} from './subjects-api.service';
     <h2>Study Subjects</h2>
     <p>Choose a Subject to track study time.</p>
     <div class="subjects">
-      <mat-card class="example-card" *ngFor="let subject of subjectsList" class="mat-elevation-z5">
+      <mat-card class="subjectple-card" *ngFor="let subject of subjectsList" class="mat-elevation-z5">
         <mat-card-content>
           <mat-card-title>{{subject.title}}</mat-card-title>
           <mat-card-subtitle>{{subject.description}}</mat-card-subtitle>
           <p>
-            Etiam enim purus, vehicula nec dapibus quis, egestas eu quam.
-            Nullam eleifend auctor leo, vitae rhoncus mi sodales vel.
-            Aenean fermentum laoreet volutpat. Integer quam orci,
-            molestie non nibh suscipit, faucibus euismod sapien.
+            {{exam.long_description}}
           </p>
           <button mat-raised-button color="accent">Start</button>
           <button mat-button color="warn" *ngIf="isAdmin()"

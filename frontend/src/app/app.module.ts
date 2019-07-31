@@ -11,7 +11,7 @@ import {SubjectsComponent} from './subjects/subjects.component';
 import {CallbackComponent} from './callback.component';
 
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {MatToolbarModule, MatButtonModule, MatCardModule} from '@angular/material';
+import {MatToolbarModule, MatButtonModule, MatCardModule, MatInputModule} from '@angular/material';
 
 const appRoutes: Routes = [
   { path: 'callback', component: CallbackComponent },
@@ -35,7 +35,8 @@ const appRoutes: Routes = [
     NoopAnimationsModule,
     MatToolbarModule,
     MatButtonModule,
-    MatCardModule
+    MatCardModule,
+    MatInputModule
   ],
   providers: [SubjectsApiService],
   bootstrap: [AppComponent]
