@@ -30,7 +30,7 @@ def get_subjects():
 @requires_auth
 def add_subject():
     # mount subject object
-    posted_subject = SubjectSchema(only=('title', 'description'))\
+    posted_subject = SubjectSchema(only=('title', 'description', 'long_description'))\
         .load(request.get_json())
 
     subject = Subject(**posted_subject.data, created_by="HTTP post request")
