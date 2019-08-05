@@ -3,6 +3,7 @@ from flask_cors import CORS
 from .auth import AuthError, requires_auth, requires_role
 from .entities.entity import Session, engine, Base
 from .entities.subject import Subject, SubjectSchema
+from .entities.user import User, UserSchema
 
 # creating the Flask application
 app = Flask(__name__)
@@ -28,16 +29,14 @@ def get_subjects():
     return jsonify(subjects.data)
 
 
-@app.route('/subjects', methods=['POST'])
+@app.route('/subjects', methods = ['POST'])
 @requires_auth
 def add_subject():
     # mount subject object
-    posted_subject = SubjectSchema(only=('title', 'description', 'long_description'))\
+    posted_subject = SubjectSchema(only = ('title', 'description', 'long_description'))\
         .load(request.get_json())
 
-    subject = Subject(**posted_subject.data, created_by="HTTP post request")
-
-    print(subject.long_description)
+    subject = Subject(**posted_subject.data, created_by = "HTTP post request")
 
     # persist subject
     session = Session()
@@ -49,7 +48,7 @@ def add_subject():
     session.close()
     return jsonify(new_subject), 201
 
-@app.route('/subjects/<subjectId>', methods=['DELETE'])
+@app.route('/subjects/<subjectId>', methods = ['DELETE'])
 @requires_role('admin')
 def delete_subject(subjectId):
     session = Session()
@@ -58,6 +57,24 @@ def delete_subject(subjectId):
     session.commit()
     session.close()
     return '', 201
+
+@app.route('/users/register', methods = ['POST'])
+def register():
+    # mount user object
+    posted_user = UserSchema(only = ('username', 'email', 'password'))\
+        .load(request.get_json())
+
+    user = User(**posted_user.data, created_by = "HTTP post request")
+
+    # persist user
+    session = Session()
+    session.add(user)
+    session.commit()
+
+    # return created user
+    new_user = UserSchema().dump(user).data
+    session.close()
+    return jsonify(new_user), 201
 
 @app.errorhandler(AuthError)
 def handle_auth_error(ex):
